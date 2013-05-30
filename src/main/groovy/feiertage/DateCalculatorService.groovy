@@ -3,6 +3,8 @@ package feiertage
 import de.jollyday.HolidayManager
 import net.objectlab.kit.datecalc.common.DefaultHolidayCalendar
 import net.objectlab.kit.datecalc.joda.LocalDateKitCalculatorsFactory
+import org.apache.commons.lang3.time.StopWatch
+import org.joda.time.Interval
 import org.joda.time.LocalDate
 
 /**
@@ -13,31 +15,27 @@ import org.joda.time.LocalDate
  * To change this template use File | Settings | File Templates.
  */
 class DateCalculatorService {
-    static final String CALENDER_NAME="TARGET2"
+    static final String CALENDER_NAME = "TARGET2"
     static {
         URL url = DateCalculatorService.class.getClassLoader().getResource("target2.xml");
         HolidayManager manager = HolidayManager.getInstance(url);
-// create or get the Holidays
-        def holidays = []
-        def thisYear = new LocalDate().getYear()
-        def firstYear = thisYear - 2
-        def lastYear = thisYear + 8
-        (firstYear..lastYear).each { holidays += manager.getHolidays(it) }
 
-// fill dates into set of LocalDate
-        def holidayDates = holidays.collect { it.date }.toSet()
+        def now = new LocalDate()
+        def first = now.withDayOfYear(1).minusYears(2).toDateMidnight()
+        def last = now.withDayOfYear(1).plusYears(8).toDateMidnight()
+        def sw = new StopWatch()
 
-// create the HolidayCalendar ASSUMING that the set covers 2013!
+        sw.start()
+        def holidayDates = manager.getHolidays(new Interval(first, last)).collect { it.date }.sort { it }
+        sw.stop()
+        println(sw)
+
         def calendar = new DefaultHolidayCalendar<LocalDate>
-        (holidayDates, new LocalDate(firstYear, 1, 1), new LocalDate(lastYear, 1, 1))
+        (holidayDates.toSet(), first.toLocalDate(), last.toLocalDate())
 
-// register the holidays, any calculator with name "DE"
-// asked from now on will receive an IMMUTABLE reference to this calendar
+        // register the holidays, any calculator with name "TARGET2"
+        // asked from now on will receive an IMMUTABLE reference to this calendar
         LocalDateKitCalculatorsFactory.getDefaultInstance().registerHolidays(CALENDER_NAME, calendar);
-
-// ask for a LocalDate calculator for "DE"
-// (even if a new set of holidays is registered, this one calculator is not affected
-
     }
 
     static def getCalculator(String type) {

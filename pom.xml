@@ -25,12 +25,16 @@
             <artifactId>datecalc-joda</artifactId>
             <version>1.2.0</version>
         </dependency>
-
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.2</version>
 
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.gpars</groupId>
@@ -63,7 +67,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
