@@ -35,16 +35,3 @@ scenario "labor day is on sunday", {
         result.shouldBe new LocalDate("2011-05-06")
     }
 }
-
-scenario "whitsun is not on target2 calendar", {
-    given "friday just before whitsun", {
-        aDate = new LocalDate("2013-05-17")
-        calc.setStartDate(aDate)
-    }
-    when "i move by 4 work day", {
-        result = calc.moveByBusinessDays(4).getCurrentBusinessDate()
-    }
-    then "the result should be the next thursday", {
-        result.shouldBe new LocalDate("2013-05-23")
-    }
-}
