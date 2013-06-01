@@ -1,0 +1,39 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+group = 'de.gzockoll.prototype.feiertage'
+version = '1.0-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'de.jollyday', name: 'jollyday', version:'0.4.7'
+    compile group: 'net.objectlab.kit', name: 'datecalc-common', version:'1.2.0'
+    compile group: 'net.objectlab.kit', name: 'datecalc-joda', version:'1.2.0'
+    compile group: 'joda-time', name: 'joda-time', version:'2.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.1'
+    compile group: 'org.codehaus.gpars', name: 'gpars', version:'1.0.0'
+    compile group: 'org.codehaus.gmaven.runtime', name: 'gmaven-runtime-2.0', version:'1.5'
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+   	testRuntime("org.easyb:easyb:0.9.8@jar") { transitive = true }
+}
+
+check << {
+    ant.taskdef(name: "easyb", classname:"org.easyb.ant.BehaviorRunnerTask", classpath: sourceSets.test.runtimeClasspath.asPath)
+ 
+    ant.easyb( classpath: sourceSets.test.runtimeClasspath.asPath, failureProperty:'easyb_failed' ) {
+        report( location:"${project.testResultsDir}/story.txt", format:"txtstory" )
+        behaviors( dir: "src/test/easyb" ) {
+            include( name:"**/*.groovy" )
+        }
+   }
+ 
+    ant.fail( if:'easyb_failed', message: 'Failures in easyb stories' )
+}

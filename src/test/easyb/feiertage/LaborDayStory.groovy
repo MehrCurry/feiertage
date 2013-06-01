@@ -1,4 +1,5 @@
-import feiertage.DateCalculatorService
+package feiertage
+
 import net.objectlab.kit.datecalc.common.HolidayHandlerType
 import org.joda.time.LocalDate
 
